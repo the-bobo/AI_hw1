@@ -115,7 +115,7 @@ if (process.argv.length !== 3) {
 var input = process.argv[2];	// CAUTION - GLOBAL OBJECT
 var output = "tilepuz-ajb90.txt";	// CAUTION - GLOBAL OBJECT
 var fringe = []; // caution - global variable
-
+var x = 0;
 aStar();
 
 function inputSanitizer(){
@@ -201,7 +201,7 @@ function aStar(){
 	var startingBoard = inputSanitizer();
 	
 	var startCost = 0;
-	var start_h_cost = heuristic(startingBoard);
+	var start_h_cost = 999999;	// hard coded for heuristic consistency
 	var start_total_cost = start_h_cost;
 	var start_state = new State_t(startingBoard);
 	nullParent = null;
@@ -307,13 +307,19 @@ function heuristic(board){
 */
 
 
-function insertFringe(childNodesArray){		// fringe is global, so no need to pass it
+function insertFringe(childNodesArray){		
+	var searchFringe = fringe;		// grab a copy of fringe for searching
+
+	console.log("my childNodesArray for x: " + x + " is " + childNodesArray);
 	for (var i = 0; i < childNodesArray.length; i++){
 		var insertVal = childNodesArray[i]["total_cost"];
 		var currentKey = Math.ceil((fringe.length-1) / 2);
-		var target_index = binFringeSearch(insertVal, currentKey);
+		var target_index = binFringeSearch(insertVal, currentKey, searchFringe);
 		fringe.splice(target_index, 0, childNodesArray[i]);	// inserts to fringe
 	}
+	
+	x++;
+	console.log("exiting insertFringe " + x);
 }
 
 
@@ -323,30 +329,45 @@ function insertFringe(childNodesArray){		// fringe is global, so no need to pass
 */
 
 
-function binFringeSearch(insertVal, currentKey){
+function binFringeSearch(insertVal, currentKey, searchFringe){
 	if (currentKey === 0){	// fringe was empty
+		console.log("in block 1");
 		return 0;
 	}
 
+	if (searchFringe.length === 2){
+		if (insertVal > searchFringe[0]["total_cost"] && insertVal < searchFringe[1]["total_cost"])
+			return 1;
+		if (insertVal < searchFringe[0]["total_cost"])
+			return 0;
+		if (insertVal > searchFringe[1]["total_cost"])
+			return 2;
+	}
+
 	if (insertVal < fringe[currentKey]["total_cost"]){
+		//console.log("in block 2");
 			currentKey = Math.floor(currentKey / 2);
-			binFringeSearch(insertVal, currentKey);
+			searchFringe = searchFringe.splice(currentKey);
+		//	console.log("current key is: " + currentKey);
+			return binFringeSearch(insertVal, currentKey);
 	}
 
 	if (insertVal > fringe[currentKey]["total_cost"]){
+		//console.log("in block 3");
 			currentKey += Math.ceil((fringe.length-1 - currentKey) / 2);
 			if (currentKey < fringe.length-1)
-				binFringeSearch(insertVal, currentKey);
+				return binFringeSearch(insertVal, currentKey);
 			if (currentKey === fringe.length-1){
 				if (insertVal < fringe[currentKey]["total_cost"])
 					return fringe.length-1;
-				if (inesrtVal > fringe[currentKey]["total_cost"])
+				if (insertVal > fringe[currentKey]["total_cost"])
 					return fringe.length;
-				else if (inesrtVal === fringe[currentKey]["total_cost"])
+				else if (insertVal === fringe[currentKey]["total_cost"])
 					return fringe.length;
 			}
 	}
 	if (insertVal === fringe[currentKey]["total_cost"]){
+		console.log("in block 4");
 			return currentKey;
 	}
 }
@@ -492,9 +513,6 @@ function successorFunction(someNode) {
 		}
 	}
 	// need to pass them in to the fringe
-	console.log("end of successorFunction, childNodes_t is: \n");
-	console.log(childNodes_t);
-	console.log('\n');
 	insertFringe(childNodes_t);
 }
 
