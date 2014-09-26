@@ -105,3 +105,48 @@ function successorFunction(someNode) {
 	// generate childNodes_t 
 
 }
+
+/* ========================================================================
+		FRINGE INSERTION FUNCTION 
+   ========================================================================
+*/
+
+
+function insertFringe(childNodesArray){		
+	//console.log("inside insertFringe");
+
+	for (var cntr = 0; cntr < fringe.length; cntr++){
+		if (typeof fringe[cntr] === 'undefined')
+			break;
+	}
+
+	if(cntr === 0){
+		//console.log("cntr was 0");
+		fringe.unshift(childNodesArray[0]);
+		childNodesArray.splice(0,1);
+	}
+
+	for (var i = 0; i < childNodesArray.length; i++){
+		var insertVal = childNodesArray[i]["total_cost"];
+		//console.log("just assigned insertVal");
+
+		for (var j = 0; j < fringe.length; j++){
+			if (typeof fringe[j] !== 'undefined' && fringe[j]["total_cost"] > insertVal){
+				//console.log("fringe is greater than insertVal")
+				fringe.splice(j, 0, childNodesArray[i]);
+				break;
+			}
+
+			if(typeof fringe[j] === 'undefined'){
+				//console.log("going to break");
+				if (insertVal >= fringe[j-1]){
+					//put it at fringe[j]
+					fringe.splice(j+1, 0, childNodesArray[i]);
+				}
+				break;
+			}
+			
+		}
+	}
+	
+}

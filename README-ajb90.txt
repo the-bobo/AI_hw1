@@ -1,8 +1,11 @@
 (1) input file must be utf-8 encoded
 
-(2) Exactly one argument required: must specify filename.txt of input file
+(2) Node crashes when it runs out of memory, so to get around that run like:
+	node --max-old-space-size=2000 tilepuzajb90.js tilepuzinput.txt 
 
-(3) Correct usage is: node tilepuzajb90.js filename.txt
+This allocates 2GB of memory to node.
+
+(3) Correct usage is: node --max-old-space-size=2000 tilepuzajb90.js filename.txt
 
 (4) filename.txt must also be in the same directory as tilepuzajb90.js
 

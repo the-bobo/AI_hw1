@@ -308,7 +308,7 @@ function heuristic(board){
 	var h_score = 0;	// h_score of 0 indicates goal state
 	for (var i = 0; i < board.length; i ++){
 		if (board[i] !== (i+1) && board[i] !== 0){	// no heuristic for blank square
-			h_score += Math.abs(board[i] - (i+1));
+			h_score++;
 		}
 	}
 	return h_score;
