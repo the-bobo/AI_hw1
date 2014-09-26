@@ -67,7 +67,89 @@ function heuristic(board){
 }
 
 function findAttacks(i,j,board){
+	var attacks = 0;
+	var x;
+	var y;
+	// Knight Attacks: D2L1, D2R1, U2L1, U2R1, L2D1, L2U1, R2D1, R2U1
+	// Moving down is + n, Moving up is - n
+	// Moving right is + 1, Moving left is -1
+
+	// D2L1
+	x = i + 2;
+	y = j -1;
+	if(typeof board[x][y] !=== 'undefined'){
+		if(board[x][y] === 1)
+			attacks++;
+	}
 	
+	// D2R1
+	x = i + 2;
+	y = j + 1;
+	if(typeof board[x][y] !=== 'undefined'){
+		if(board[x][y] === 1)
+			attacks++;
+	}
+
+	// U2L1
+	x = i - 2;
+	y = j -1;
+	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+		attacks++;
+
+	// U2R1
+	x = i - 2;
+	y = j +1;
+	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+		attacks++;
+
+	// L2D1
+	x = i + 1;
+	y = j -2;	
+	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+		attacks++;
+
+	//L2U1
+	x = i -1;
+	y = j -2;
+	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+		attacks++;
+
+	//R2D1
+	x = i+1;
+	y = j+2;
+	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+		attacks++;
+
+	//R2U1
+	x = i-1;
+	y = j+2
+	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+		attacks++;
+
+	// Four diagonals exist: L1U1, L1D1, R1U1, R1D1
+	// Moving down is + n, Moving up is - n
+	// Moving right is + 1, Moving left is -1
+
+	//L1U1
+	x = i;
+	y = j;
+	while(board[x][y] !=== 'undefined'){
+		y--;
+		x--;
+		if(board[x][y] === 1)
+			attacks++;
+	}
+
+	//L1D1
+	x = i;
+	y = j;
+	while(board[x][y] !=== 'undefined'){
+		y--;
+		x++;
+	}
+
+
+	return attacks;
 }
 
 /* ========================================================================
