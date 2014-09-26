@@ -1,3 +1,8 @@
+For TilePuz:	node --max-old-space-size=4000 tilepuzajb90.js tilepuzinput.txt 
+For queens: 	node queensajb90.js 4
+		(here we'll have a 4x4 board)
+
+Add'l Info for TilePuz:
 (1) input file must be utf-8 encoded
 
 (2) Node crashes when it runs out of memory, so to get around that run like:
