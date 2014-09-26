@@ -184,7 +184,7 @@ function pathWalker(goalNode){
 		finalPath.unshift(goalNode.pNode_t.nodeState);	// adds parentNode to head of path
 		goalNode = goalNode.pNode_t;
 	}
-	fs.appendFile(output, "The total cost for this path was: " + finalCost + "\n");
+	fs.appendFileSync(output, "The total cost for this path was: " + finalCost + "\n");
 	for(var i = 0; i < finalPath.length; i ++){
 		var currentBoard = finalPath[i].board;
 		var lineToWrite1 = "";
@@ -219,7 +219,7 @@ function pathWalker(goalNode){
 			}
 			lineToWrite4 += "," + currentBoard[m];
 		}
-		fs.appendFile(output, "" + lineToWrite1 + "\n" + lineToWrite2 + "\n" + lineToWrite3 + "\n" + lineToWrite4);
+		fs.appendFileSync(output, "" + lineToWrite1 + "\n" + lineToWrite2 + "\n" + lineToWrite3 + "\n" + lineToWrite4);
 		//fs.writeFile(output, thingToWRite, function(err) { if (err) throw err; });	
 	}
 	
