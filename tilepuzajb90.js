@@ -114,6 +114,9 @@ if (process.argv.length !== 3) {
 
 var input = process.argv[2];	// CAUTION - GLOBAL OBJECT
 var output = "tilepuz-ajb90.txt";	// CAUTION - GLOBAL OBJECT
+var fringe = []; // caution - global variable
+
+aStar();
 
 function inputSanitizer(){
 	var data = fs.readFileSync(input, 'utf-8');
@@ -177,15 +180,6 @@ State_t.prototype = {	// methods for State_t objects - not used
 	constructor: State_t,
 	giveBoard: function() { return this.board; }
 };
-
-
-/* ========================================================================
-		FRINGE OBJECT (CAUTION: IS GLOBAL)
-   ========================================================================
-*/
-
-
-var fringe = []; // caution - global variable
 
 
 /* ========================================================================
@@ -313,7 +307,7 @@ function insertFringe(childNodesArray){		// fringe is global, so no need to pass
 	for (var i = 0; i < childNodesArray.length; i++){
 		var insertVal = childNodesArray[i]["total_cost"];
 		var currentKey = Math.ceil((fringe.length-1) / 2);
-		var target_index = binFringeSearch(inesrtVal, currentKey);
+		var target_index = binFringeSearch(insertVal, currentKey);
 		fringe.splice(target_index, 0, childNodesArray[i]);	// inserts to fringe
 	}
 }
@@ -471,7 +465,7 @@ function successorFunction(someNode) {
 			childNodes_t.push(U2R1(zero_index, board, someNode));
 		}
 	}
-	if (zero_index === 10 || zero_index === 11 || zero_index === 14 || zero === 15){
+	if (zero_index === 10 || zero_index === 11 || zero_index === 14 || zero_index === 15){
 		if (zero_index === 14){
 			childNodes_t.push(L2U1(zero_index, board, someNode));
 			childNodes_t.push(U2L1(zero_index, board, someNode));
@@ -511,43 +505,43 @@ function R2D1(zero_index, board, pNode){	// pNode is parentNode
 }
 
 
-function R2U1(zero_index, board){
+function R2U1(zero_index, board, pNode){
 	var target = zero_index + 2 - 4;
 	var myName = "R2U1";
 	return nodeComputer(target, zero_index, board, pNode, myName);
 }
 
-function L2D1 (zero_index, board) {
+function L2D1 (zero_index, board, pNode) {
 	var target = zero_index - 2 + 4;
 	var myName = "L2D1";
 	return nodeComputer(target, zero_index, board, pNode, myName);
 }
 
-function L2U1 (zero_index, board) {
+function L2U1 (zero_index, board, pNode) {
 	var target = zero_index - 2 - 4;
 	var myName = "L2U1";
 	return nodeComputer(target, zero_index, board, pNode, myName);
 }
 
-function U2R1 (zero_index, board) {
+function U2R1 (zero_index, board, pNode) {
 	var target = zero_index - 8 + 1;
 	var myName = "U2R1";
 	return nodeComputer(target, zero_index, board, pNode, myName);
 }
 
-function U2L1 (zero_index, board) {
+function U2L1 (zero_index, board, pNode) {
 	var target = zero_index - 8 - 1;
 	var myName = "U2L1";
 	return nodeComputer(target, zero_index, board, pNode, myName);
 }
 
-function D2R1 (zero_index, board) {
+function D2R1 (zero_index, board, pNode) {
 	var target = zero_index + 8 + 1;
 	var myName = "D2R1";
 	return nodeComputer(target, zero_index, board, pNode, myName);
 }
 
-function D2L1 (zero_index, board) {
+function D2L1 (zero_index, board, pNode) {
 	var target = zero_index + 8 - 1;
 	var myName = "D2L1";
 	return nodeComputer(target, zero_index, board, pNode, myName);
