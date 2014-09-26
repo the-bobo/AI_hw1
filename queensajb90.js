@@ -136,8 +136,10 @@ function findAttacks(i,j,board){
 	while(board[x][y] !=== 'undefined'){
 		y--;
 		x--;
-		if(board[x][y] === 1)
+		if(board[x][y] === 1){
 			attacks++;
+			break;
+		}
 	}
 
 	//L1D1
@@ -146,6 +148,34 @@ function findAttacks(i,j,board){
 	while(board[x][y] !=== 'undefined'){
 		y--;
 		x++;
+		if(board[x][y] === 1){
+			attacks++;
+			break;
+		}
+	}
+
+	//R1U1
+	x = i;
+	y = j;
+	while(board[x][y] !=== 'undefined'){
+		y++;
+		x++;
+		if(board[x][y] === 1){
+			attacks++;
+			break;
+		}
+	}
+
+	//R1D1
+	x = i;
+	y = j;
+	while(board[x][y] !=== 'undefined'){
+		y++;
+		x--;
+		if(board[x][y] === 1){
+			attacks++;
+			break;
+		}
 	}
 
 
