@@ -115,7 +115,8 @@ if (process.argv.length !== 3) {
 var input = process.argv[2];	// CAUTION - GLOBAL OBJECT
 var output = "tilepuz-ajb90.txt";	// CAUTION - GLOBAL OBJECT
 var fringe = new Array(9999999); // hardwired to nowhere near max b/c javascript
-aStar();
+//aStar();
+console.log(heuristic(inputSanitizer(input)));
 
 function inputSanitizer(){
 	var data = fs.readFileSync(input, 'utf-8');
@@ -307,7 +308,7 @@ function heuristic(board){
 	var h_score = 0;	// h_score of 0 indicates goal state
 	for (var i = 0; i < board.length; i ++){
 		if (board[i] !== (i+1) && board[i] !== 0){	// no heuristic for blank square
-			h_score++;		// counts up all out of place tiles
+			h_score += Math.abs(board[i] - (i+1));
 		}
 	}
 	return h_score;
