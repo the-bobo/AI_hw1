@@ -18,3 +18,27 @@ for (var bcntr = 0; bcntr < n; bcntr++){
 	board[bcntr] = boardRow;
 }
 
+
+/* ========================================================================
+		NODE_T STRUCTURE 
+   ========================================================================
+*/
+
+
+function Node_t(cost, h_cost, total_cost, someState, pNode_t){
+	this.cost = cost; //# of attacks
+	this.nodeState = someState;
+}
+
+
+/* ========================================================================
+		STATE_T STRUCTURE 
+   ========================================================================
+*/
+
+
+function State_t(board){
+	this.board = board; //a 2-d, n-by-n array, where user specifies n
+}
+
+
