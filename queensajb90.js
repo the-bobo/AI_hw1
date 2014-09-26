@@ -56,7 +56,7 @@ function heuristic(board){
 	for (var i = 0; i < n; i++){
 		for (var j = 0; j < n; j++){
 			if (board[i][j] === 1){
-				h_score = Add Up All Attacks;
+				h_score = findAttacks(i,j,board);
 			}
 		}
 	}
@@ -64,6 +64,10 @@ function heuristic(board){
 	h_score = h_score / 2; // because pairs
 
 	return h_score;
+}
+
+function findAttacks(i,j,board){
+	
 }
 
 /* ========================================================================
