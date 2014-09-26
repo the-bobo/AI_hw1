@@ -209,6 +209,7 @@ function aStar(){
 	var currentNode;
 
 	successorFunction(startNode);	// adds startNode's children to the fringe
+	console.log("outside the while loop in aStar()");
 
 	while(fringe.length > 0){
 		currentNode = fringe.shift();
@@ -216,6 +217,9 @@ function aStar(){
 			pathWalker(currentNode);
 			console.log("Optimal solution stored in tilepuz-ajb90.txt, exiting now!")
 			process.exit(0);
+		}
+		else{
+			successorFunction(currentNode);
 		}
 	}
 	console.log("Fringe empty. No solution found, quitting...");
@@ -488,6 +492,9 @@ function successorFunction(someNode) {
 		}
 	}
 	// need to pass them in to the fringe
+	console.log("end of successorFunction, childNodes_t is: \n");
+	console.log(childNodes_t);
+	console.log('\n');
 	insertFringe(childNodes_t);
 }
 
