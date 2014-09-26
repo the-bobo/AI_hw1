@@ -114,8 +114,7 @@ if (process.argv.length !== 3) {
 
 var input = process.argv[2];	// CAUTION - GLOBAL OBJECT
 var output = "tilepuz-ajb90.txt";	// CAUTION - GLOBAL OBJECT
-var fringe = []; // caution - global variable
-var x = 0;
+var fringe = new Array(9999999); // hardwired to nowhere near max b/c javascript
 aStar();
 
 function inputSanitizer(){
@@ -207,12 +206,22 @@ function aStar(){
 	nullParent = null;
 	var startNode = new Node_t(startCost, start_h_cost, start_total_cost, start_state, nullParent);
 	var currentNode;
+	var nodesExpanded = 0; // counts # nodes expanded
 
 	successorFunction(startNode);	// adds startNode's children to the fringe
 	console.log("outside the while loop in aStar()");
 
-	while(fringe.length > 0){
+	for (var i = 0; i < fringe.length; i++){
+		if (typeof fringe[i] === 'undefined')
+			break;
+	}
+
+	while(i >= 0){
 		currentNode = fringe.shift();
+		nodesExpanded++;
+		if (nodesExpanded % 1000 === 0)
+			console.log(nodesExpanded/1000 + " Thousand many nodes expanded");
+		i--;	// i will get re-computed if successors are generated
 		if(currentNode.nodeState === goalNodeState){
 			pathWalker(currentNode);
 			console.log("Optimal solution stored in tilepuz-ajb90.txt, exiting now!")
@@ -220,6 +229,10 @@ function aStar(){
 		}
 		else{
 			successorFunction(currentNode);
+			for (var i = 0; i < fringe.length; i++){
+				if (typeof fringe[i] === 'undefined')
+				break;
+			}
 		}
 	}
 	console.log("Fringe empty. No solution found, quitting...");
@@ -308,18 +321,59 @@ function heuristic(board){
 
 
 function insertFringe(childNodesArray){		
-	var searchFringe = fringe;		// grab a copy of fringe for searching
+	//var searchFringe = fringe;		// grab a copy of fringe for searching
 
-	console.log("my childNodesArray for x: " + x + " is " + childNodesArray);
+/*
 	for (var i = 0; i < childNodesArray.length; i++){
 		var insertVal = childNodesArray[i]["total_cost"];
 		var currentKey = Math.ceil((fringe.length-1) / 2);
 		var target_index = binFringeSearch(insertVal, currentKey, searchFringe);
 		fringe.splice(target_index, 0, childNodesArray[i]);	// inserts to fringe
 	}
+
+	*/
+	//console.log("inside insertFringe");
+
+	for (var cntr = 0; cntr < fringe.length; cntr++){
+		if (typeof fringe[cntr] === 'undefined')
+			break;
+	}
+
+	if(cntr === 0){
+		//console.log("cntr was 0");
+		fringe.unshift(childNodesArray[0]);
+		childNodesArray.splice(0,1);
+	}
+
+	for (var i = 0; i < childNodesArray.length; i++){
+		var insertVal = childNodesArray[i]["total_cost"];
+		//console.log("just assigned insertVal");
+
+		for (var j = 0; j < fringe.length; j++){
+			if (typeof fringe[j] !== 'undefined' && fringe[j]["total_cost"] > insertVal){
+				//console.log("fringe is greater than insertVal")
+				fringe.splice(j, 0, childNodesArray[i]);
+				break;
+			}
+
+			if(typeof fringe[j] === 'undefined'){
+				//console.log("going to break");
+				if (insertVal >= fringe[j-1]){
+					//put it at fringe[j]
+					fringe.splice(j+1, 0, childNodesArray[i]);
+				}
+				break;
+			}
+			
+			
+			/* does not work when we hardwire the array length of fringe
+			else{
+				console.log("shouldn't be in here");
+				fringe.push(childNodesArray[i]);
+			} */
+		}
+	}
 	
-	x++;
-	console.log("exiting insertFringe " + x);
 }
 
 
@@ -331,7 +385,7 @@ function insertFringe(childNodesArray){
 
 function binFringeSearch(insertVal, currentKey, searchFringe){
 	if (currentKey === 0){	// fringe was empty
-		console.log("in block 1");
+		//console.log("in block 1");
 		return 0;
 	}
 
