@@ -85,7 +85,9 @@
 
 	REMOVAL FROM FRINGE
 		- Do we have a function that takes things off the fringe???
-		- It needs to actually implement A* and test for goal state
+		- It needs to actually implement A*
+		- We need a way to evaluate if a state === the goal state
+		- We need a way to evaluate failure (fringe empty?)
 
 	FILE I/O
 		- How to read input file?
@@ -95,10 +97,20 @@
 
 var fs = require('fs'); // loads a required filesystem library for node
 
+if (process.argv.length !== 3) {
+    console.error("Exactly one argument required: must specify filename.txt of input file");
+    console.error("Correct usage is: node tilepuzajb90.js filename.txt");
+    console.error("filename.txt must also be in the same directory as tilepuzajb90.js");
+    process.exit(1);
+}
+
+
+
 /* ========================================================================
 		NODE_T STRUCTURE 
    ========================================================================
 */
+
 
 function Node_t(cost, h_cost, total_cost, someState, pNode_t){
 	this.cost = cost;
@@ -114,10 +126,12 @@ Node_t.prototype = {	// methods for Node_t objects
 	giveParent: function() { return this.pNode_t; }
 };
 
+
 /* ========================================================================
 		STATE_T STRUCTURE 
    ========================================================================
 */
+
 
 function State_t(board){
 	this.board = board; //a 1-d array
@@ -128,16 +142,48 @@ State_t.prototype = {	// methods for State_t objects
 	giveBoard: function() { return this.board; }
 };
 
+
 /* ========================================================================
 		FRINGE OBJECT (CAUTION: IS GLOBAL)
    ========================================================================
 */
+
+
 var fringe = []; // caution - global variable
+
+
+/* ========================================================================
+		PATH FUNCTION 
+   ========================================================================
+*/
+/*	Path Function
+		- Input: Goal Node
+		- Records g(n) for the Goal Node
+		- Walks backwards along the Parent Node property until Start Node
+			is reached
+		- Generates: A List, ordered from Start to Finish of Nodes
+		- Output: Processes the List to extract relevant States, ordering
+		them from Start to Finish, and displays total cost (# of moves) in
+		output file tilepuz-ajb90.txt
+*/
+function path(goalNode){
+	var finalCost = goalNode["total_cost"];
+	var finalPath = [];
+	finalPath.push(goalNode.nodeState);
+	while (goalNode.pNode_t){
+		finalPath.unshift(goalNode.pNode_t.nodeState);	// adds parentNode to head of path
+		goalNode = goalNode.pNode_t;
+	}
+	
+}
+
+
 
 /* ========================================================================
 		HEURISTIC FUNCTION 
    ========================================================================
 */
+
 
 function heuristic(board){
 	var h_score = 0;	// h_score of 0 indicates goal state
@@ -149,10 +195,13 @@ function heuristic(board){
 	return h_score;
 }
 
+
 /* ========================================================================
 		FRINGE INSERTION FUNCTION 
    ========================================================================
 */
+
+
 function insertFringe(childNodesArray){		// fringe is global, so no need to pass it
 	for (var i = 0; i < childNodesArray.length; i++){
 		var insertVal = childNodesArray[i]["total_cost"];
@@ -162,10 +211,12 @@ function insertFringe(childNodesArray){		// fringe is global, so no need to pass
 	}
 }
 
+
 /* ========================================================================
 		BINARY SEARCH FUNCTION (assists insertFringe)
    ========================================================================
 */
+
 
 function binFringeSearch(insertVal, currentKey){
 	if (currentKey === 0){	// fringe was empty
@@ -197,9 +248,36 @@ function binFringeSearch(insertVal, currentKey){
 
 
 /* ========================================================================
+		COST FUNCTION  (assists sub-routines for successor function)
+   ========================================================================
+*/
+
+
+// returns a childNode with "cost", "h_cost" and "total_cost"
+function nodeComputer(target, zero_index, board, pNode, myName){
+	if (target > (board.length-1) || target < 0){
+		console.error('Successor subroutine' + myName + 'generated illegal state');
+		process.exit(1);
+	}
+	var newBoard = board;
+	newBoard[zero_index] = board[target];
+	newBoard[target] = 0;
+
+	var newState_t = new State_t(newBoard);
+	var new_h_cost = heuristic(board); 
+	var newCost = pNode.cost + 1;
+	var newTotalCost = newCost + new_h_cost;
+	var newNode_t = new Node_t(newCost, new_h_cost, newTotalCost, newState_t, pNode);
+
+	return newNode_t;
+}
+
+
+/* ========================================================================
 		SUCCESSOR FUNCTION 
    ========================================================================
 */
+
 
 function successorFunction(someNode) {
 	var board = someNode.nodeState.board;
@@ -213,7 +291,7 @@ function successorFunction(someNode) {
 	}
 
 	if (zero_index < 0) {
-		console.log("Error: no zero found in this board");
+		console.error("Error: no zero found in this board");
 		process.exit(1);
 	}
 
@@ -312,29 +390,12 @@ function successorFunction(someNode) {
 	insertFringe(childNodes_t);
 }
 
+
 /* ========================================================================
 		SUB-ROUTINES FOR SUCCESSOR FUNCTION 
    ========================================================================
 */
 
-// returns a childNode with "cost", "h_cost" and "total_cost"
-function nodeComputer(target, zero_index, board, pNode, myName){
-	if (target > (board.length-1) || target < 0){
-		console.log('Successor subroutine' + myName + 'generated illegal state');
-		process.exit(1);
-	}
-	var newBoard = board;
-	newBoard[zero_index] = board[target];
-	newBoard[target] = 0;
-
-	var newState_t = new State_t(newBoard);
-	var new_h_cost = heuristic(board); 
-	var newCost = pNode.cost + 1;
-	var newTotalCost = newCost + new_h_cost;
-	var newNode_t = new Node_t(newCost, new_h_cost, newTotalCost, newState_t, pNode);
-
-	return newNode_t;
-}
 
 function R2D1(zero_index, board, pNode){	// pNode is parentNode
 	var target = zero_index + 2 + 4;
