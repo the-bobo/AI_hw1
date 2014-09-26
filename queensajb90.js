@@ -19,6 +19,7 @@ for (var bcntr = 0; bcntr < n; bcntr++){
 	board[bcntr] = boardRow;
 }
 
+aStar();
 
 /* ========================================================================
 		NODE_T STRUCTURE 
@@ -77,7 +78,7 @@ function findAttacks(i,j,board){
 	// D2L1
 	x = i + 2;
 	y = j -1;
-	if(typeof board[x][y] !=== 'undefined'){
+	if(x > 0 && y > 0 && typeof board[x] !== 'undefined' && typeof board[x][y] !== 'undefined'){
 		if(board[x][y] === 1)
 			attacks++;
 	}
@@ -85,7 +86,7 @@ function findAttacks(i,j,board){
 	// D2R1
 	x = i + 2;
 	y = j + 1;
-	if(typeof board[x][y] !=== 'undefined'){
+	if(x > 0 && y > 0 && typeof board[x] !== 'undefined' && typeof board[x][y] !== 'undefined'){
 		if(board[x][y] === 1)
 			attacks++;
 	}
@@ -93,39 +94,41 @@ function findAttacks(i,j,board){
 	// U2L1
 	x = i - 2;
 	y = j -1;
-	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+	if(x > 0 && y > 0 && typeof board[x] !== 'undefined' && typeof board[x][y] !== 'undefined' && board[x][y] === 1)
 		attacks++;
+	
 
 	// U2R1
 	x = i - 2;
 	y = j +1;
-	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+	if(x > 0 && y > 0 && typeof board[x] !== 'undefined' && typeof board[x][y] !== 'undefined' && board[x][y] === 1)
 		attacks++;
+	
 
 	// L2D1
 	x = i + 1;
 	y = j -2;	
-	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+	if(x > 0 && y > 0 && typeof board[x] !== 'undefined' && typeof board[x][y] !== 'undefined' && board[x][y] === 1)
 		attacks++;
-
+	
 	//L2U1
 	x = i -1;
 	y = j -2;
-	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+	if(x > 0 && y > 0 && typeof board[x] !== 'undefined' && typeof board[x][y] !== 'undefined' && board[x][y] === 1)
 		attacks++;
 
 	//R2D1
 	x = i+1;
 	y = j+2;
-	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+	if(x > 0 && y > 0 && typeof board[x] !== 'undefined' && typeof board[x][y] !== 'undefined' && board[x][y] === 1)
 		attacks++;
 
 	//R2U1
 	x = i-1;
 	y = j+2
-	if(typeof board[x][y] !=== 'undefined' && board[x][y] === 1)
+	if(x > 0 && y > 0 && typeof board[x] !== 'undefined' && typeof board[x][y] !== 'undefined' && board[x][y] === 1)
 		attacks++;
-
+	
 	// Four diagonals exist: L1U1, L1D1, R1U1, R1D1
 	// Moving down is + n, Moving up is - n
 	// Moving right is + 1, Moving left is -1
@@ -133,7 +136,7 @@ function findAttacks(i,j,board){
 	//L1U1
 	x = i;
 	y = j;
-	while(board[x][y] !=== 'undefined'){
+	while(x > 0 && y > 0 && board[x][y] !== 'undefined'){
 		y--;
 		x--;
 		if(board[x][y] === 1){
@@ -145,19 +148,22 @@ function findAttacks(i,j,board){
 	//L1D1
 	x = i;
 	y = j;
-	while(board[x][y] !=== 'undefined'){
+	while(x > 0 && y > 0 && board[x] !== 'undefined'){
 		y--;
 		x++;
+		if(typeof board[x] !== 'undefined' && y > 0 && typeof board[x][y] !== 'undefined'){
 		if(board[x][y] === 1){
 			attacks++;
 			break;
 		}
 	}
+	}
 
 	//R1U1
 	x = i;
 	y = j;
-	while(board[x][y] !=== 'undefined'){
+	while(x > 0 && y > 0 && typeof board[x+1] !== 'undefined'){
+		if (typeof board[x+1][y+1] !== 'undefined'){
 		y++;
 		x++;
 		if(board[x][y] === 1){
@@ -165,11 +171,12 @@ function findAttacks(i,j,board){
 			break;
 		}
 	}
+	}
 
 	//R1D1
 	x = i;
 	y = j;
-	while(board[x][y] !=== 'undefined'){
+	while(x > 0 && y > 0 && board[x][y] !== 'undefined'){
 		y++;
 		x--;
 		if(board[x][y] === 1){
@@ -198,7 +205,7 @@ function findAttacks(i,j,board){
 function aStar(){
 	var startCost = 0;
 	var someState = new State_t(board);
-	var startNode = new Node_t(cost, someState);
+	var startNode = new Node_t(startCost, someState);
 
 	var currentBestNode = startNode;
 	var currentBest = 99999;
