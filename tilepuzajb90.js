@@ -73,7 +73,7 @@
 			- array.shift() returns first item of array and decrements
 				array.length by 1
 
-	Path Function
+	x Path Function
 		- Input: Goal Node
 		- Records g(n) for the Goal Node
 		- Walks backwards along the Parent Node property until Start Node
@@ -88,6 +88,7 @@
 		- It needs to actually implement A*
 		- We need a way to evaluate if a state === the goal state
 		- We need a way to evaluate failure (fringe empty?)
+		- We need to start with the start state, from input file
 
 	FILE I/O
 		- How to read input file?
@@ -102,7 +103,7 @@
 */
 
 
-var fs = require('fs'); // loads a required filesystem library for node
+var fs = require('fs'); // loads a filesystem library for node
 
 if (process.argv.length !== 3) {
     console.error("Exactly one argument required: must specify filename.txt of input file");
@@ -113,7 +114,6 @@ if (process.argv.length !== 3) {
 
 var input = process.argv[2];
 var output = "tilepuz-ajb90.txt";
-
 
 
 /* ========================================================================
@@ -163,19 +163,29 @@ var fringe = []; // caution - global variable
 
 
 /* ========================================================================
+		A-STAR FUNCTION 
+   ========================================================================
+*/
+
+
+/*REMOVAL FROM FRINGE
+	- initialie start node from input file
+	- add start node's children to fringe via successor function
+	- remove_min from fringe
+	- check to see if === goal state, if yes then ???
+	- if fringe is empty, declare failure
+*/
+function aStar(){
+	var data = fs.readFileSync(input, 'utf-8');
+}
+
+
+/* ========================================================================
 		PATH-WALKER FUNCTION 
    ========================================================================
 */
-/*	Path Function
-		- Input: Goal Node
-		- Records g(n) for the Goal Node
-		- Walks backwards along the Parent Node property until Start Node
-			is reached
-		- Generates: A List, ordered from Start to Finish of Nodes
-		- Output: Processes the List to extract relevant States, ordering
-		them from Start to Finish, and displays total cost (# of moves) in
-		output file tilepuz-ajb90.txt
-*/
+
+
 function pathWalker(goalNode){
 	var finalCost = goalNode["total_cost"];
 	var finalPath = [];
@@ -219,13 +229,12 @@ function pathWalker(goalNode){
 			}
 			lineToWrite4 += "," + currentBoard[m];
 		}
+
 		fs.appendFileSync(output, "" + lineToWrite1 + "\n" + lineToWrite2 + "\n" + lineToWrite3 + "\n" + lineToWrite4);
-		//fs.writeFile(output, thingToWRite, function(err) { if (err) throw err; });	
 	}
 	
 	
 }
-
 
 
 /* ========================================================================
