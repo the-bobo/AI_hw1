@@ -112,8 +112,34 @@ if (process.argv.length !== 3) {
     process.exit(1);
 }
 
-var input = process.argv[2];
-var output = "tilepuz-ajb90.txt";
+var input = process.argv[2];	// CAUTION - GLOBAL OBJECT
+var output = "tilepuz-ajb90.txt";	// CAUTION - GLOBAL OBJECT
+
+function inputSanitizer(){
+	var data = fs.readFileSync(input, 'utf-8');
+	var array = data.split('\n');
+
+	var array1 = array[0].split(',');
+	var array2 = array[1].split(',');
+	var array3 = array[2].split(',');
+	var array4 = array[3].split(',');
+
+	for (var i = 0; i < array1.length; i++){
+		array[i] = parseInt(array1[i], 10);
+	}
+	for (var i = 0; i < array2.length; i++){
+		array[i+4] = parseInt(array2[i], 10);
+	}
+	for (var i = 0; i < array3.length; i++){
+		array[i+8] = parseInt(array3[i], 10);
+	}
+	for (var i = 0; i < array4.length; i++){
+		array[i+12] = parseInt(array4[i], 10);
+	}
+
+	return array; 		// this is our starting board
+
+}
 
 
 /* ========================================================================
@@ -131,7 +157,7 @@ function Node_t(cost, h_cost, total_cost, someState, pNode_t){
 	//to make new nodes: var newNode_t = new Node_t(paramters)
 }
 
-Node_t.prototype = {	// methods for Node_t objects
+Node_t.prototype = {	// methods for Node_t objects - not used
 	constructor: Node_t,
 	giveParent: function() { return this.pNode_t; }
 };
@@ -147,7 +173,7 @@ function State_t(board){
 	this.board = board; //a 1-d array
 }
 
-State_t.prototype = {	// methods for State_t objects
+State_t.prototype = {	// methods for State_t objects - not used
 	constructor: State_t,
 	giveBoard: function() { return this.board; }
 };
@@ -176,7 +202,15 @@ var fringe = []; // caution - global variable
 	- if fringe is empty, declare failure
 */
 function aStar(){
-	var data = fs.readFileSync(input, 'utf-8');
+	var startingBoard = inputSanitizer();
+	
+	var startCost = 0;
+	var start_h_cost = heuristic(startingBoard);
+	var start_total_cost = start_h_cost;
+	var start_state = new State_t(startingBoard);
+	nullParent = null;
+	var startNode = new Node_t(startCost, start_h_cost, start_total_cost, start_state, nullParent)
+
 }
 
 
