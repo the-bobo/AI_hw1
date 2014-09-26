@@ -182,6 +182,22 @@ State_t.prototype = {	// methods for State_t objects - not used
 
 
 /* ========================================================================
+		ARRAYS EQUAL FUNCTION
+   ========================================================================
+*/
+function arraysEqual(arr1, arr2){
+	    if(arr1.length !== arr2.length)
+        return false;
+    for(var i = arr1.length; i--;) {
+        if(arr1[i] !== arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+/* ========================================================================
 		A-STAR FUNCTION 
    ========================================================================
 */
@@ -222,7 +238,7 @@ function aStar(){
 		if (nodesExpanded % 1000 === 0)
 			console.log(nodesExpanded/1000 + " Thousand many nodes expanded");
 		i--;	// i will get re-computed if successors are generated
-		if(currentNode.nodeState.board === goalNodeState){
+		if( arraysEqual(currentNode.nodeState.board, goalNodeState) ){
 			pathWalker(currentNode);
 			console.log("Optimal solution stored in tilepuz-ajb90.txt, exiting now!")
 			process.exit(0);
