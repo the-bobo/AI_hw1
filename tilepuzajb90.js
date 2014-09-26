@@ -112,7 +112,7 @@ if (process.argv.length !== 3) {
 }
 
 var input = process.argv[2];
-var output = "tilepuz-ajb90";
+var output = "tilepuz-ajb90.txt";
 
 
 
@@ -163,7 +163,7 @@ var fringe = []; // caution - global variable
 
 
 /* ========================================================================
-		PATH FUNCTION 
+		PATH-WALKER FUNCTION 
    ========================================================================
 */
 /*	Path Function
@@ -176,7 +176,7 @@ var fringe = []; // caution - global variable
 		them from Start to Finish, and displays total cost (# of moves) in
 		output file tilepuz-ajb90.txt
 */
-function path(goalNode){
+function pathWalker(goalNode){
 	var finalCost = goalNode["total_cost"];
 	var finalPath = [];
 	finalPath.push(goalNode.nodeState);
@@ -184,7 +184,7 @@ function path(goalNode){
 		finalPath.unshift(goalNode.pNode_t.nodeState);	// adds parentNode to head of path
 		goalNode = goalNode.pNode_t;
 	}
-	fs.writeFileSync(output, "The total cost for this path was: " + finalCost + "\n");
+	fs.appendFile(output, "The total cost for this path was: " + finalCost + "\n");
 	for(var i = 0; i < finalPath.length; i ++){
 		var currentBoard = finalPath[i].board;
 		var lineToWrite1 = "";
@@ -219,7 +219,7 @@ function path(goalNode){
 			}
 			lineToWrite4 += "," + currentBoard[m];
 		}
-		fs.writeFileSync(output, ("" + lineToWrite1 + "\n" + lineToWrite2 + "\n" + lineToWrite3 + "\n" + lineToWrite4));
+		fs.appendFile(output, "" + lineToWrite1 + "\n" + lineToWrite2 + "\n" + lineToWrite3 + "\n" + lineToWrite4);
 		//fs.writeFile(output, thingToWRite, function(err) { if (err) throw err; });	
 	}
 	
