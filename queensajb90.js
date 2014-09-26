@@ -53,6 +53,15 @@ function heuristic(board){
 	var h_score = 0;	// h_score of 0 indicates goal state
 
 	//calculate heuristic
+	for (var i = 0; i < n; i++){
+		for (var j = 0; j < n; j++){
+			if (board[i][j] === 1){
+				h_score = Add Up All Attacks;
+			}
+		}
+	}
+
+	h_score = h_score / 2; // because pairs
 
 	return h_score;
 }
@@ -94,6 +103,7 @@ function aStar(){
 		}
 	}
 	console.log("Emptied fringe, retrieving best solution \n");
+	console.log("We had a " + n + " by " + n + " dimension gameboard");
 	console.log("Best solution has " + currentBest + " many pairs of attacking superqueens \n");
 	// ideally, output positions of queens as well
 
@@ -111,22 +121,48 @@ function successorFunction(someNode) {
 	var childNodes_t = []; // array of childNodes to return
 
 	var queenCount = 0;
+	var occupiedRows = [];
 
-	// must return -1 if we are at an end state (no successors)
+	// must return - 1 if we are at an end state (no successors)
 
 	// generate childNodes_t 
+	var newBoard = board;
+
 	for (var row = 0; row < n; row++){
 		for (var col = 0; col < n; col++){
 			if (board[col][row] === 1)
 				queenCount++;
+				occupiedRows.push(col);
 			if (queenCount > 0){
 				queenCount = 0;
 				continue; // goes to outer for loop, advancing us to next column
 			}
+			else if (queenCount === 0){ // this is the first free column, let's add a queen
+				// we can add to any row in this column that is not in occupiedRows
+				for (var adder = 0; adder < n; adder++){
+					for(var i = 0; i < occupiedRows.length; i++){
+						if (adder === occupiedRows[i])
+							continue; // takes us to for (var adder) loop
+						else{
+							newBoard[adder][row] = 1;
+							//make a child node, add to child list
+							var nodeToAdd = new Node_t(heuristic(newBoard), newBoard);
+							childNodes_t.push(nodeToAdd);
+							newBoard = board; 	// reset newBoard
+						}
+					}
+				}
+
+			}
 		}
 	}
 
+	if (childNodes_t.length === 0)
+		return -1;	// lets aStar() know we're at an end state
+	else
+		insertFringe(childNodes_t);
 }
+
 
 /* ========================================================================
 		FRINGE INSERTION FUNCTION 
@@ -134,7 +170,7 @@ function successorFunction(someNode) {
 */
 
 
-function insertFringe(childNodesArray){		
+function insertFringe(childNodesArray){		// edits global object fringe, so does not return
 	//console.log("inside insertFringe");
 
 	for (var cntr = 0; cntr < fringe.length; cntr++){
@@ -149,11 +185,11 @@ function insertFringe(childNodesArray){
 	}
 
 	for (var i = 0; i < childNodesArray.length; i++){
-		var insertVal = childNodesArray[i]["total_cost"];
+		var insertVal = childNodesArray[i]["cost"];
 		//console.log("just assigned insertVal");
 
 		for (var j = 0; j < fringe.length; j++){
-			if (typeof fringe[j] !== 'undefined' && fringe[j]["total_cost"] > insertVal){
+			if (typeof fringe[j] !== 'undefined' && fringe[j]["cost"] > insertVal){
 				//console.log("fringe is greater than insertVal")
 				fringe.splice(j, 0, childNodesArray[i]);
 				break;
