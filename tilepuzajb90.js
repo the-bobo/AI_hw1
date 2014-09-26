@@ -95,6 +95,13 @@
 
 */
 
+
+/* ========================================================================
+		FILE I/O
+   ========================================================================
+*/
+
+
 var fs = require('fs'); // loads a required filesystem library for node
 
 if (process.argv.length !== 3) {
@@ -103,6 +110,9 @@ if (process.argv.length !== 3) {
     console.error("filename.txt must also be in the same directory as tilepuzajb90.js");
     process.exit(1);
 }
+
+var input = process.argv[2];
+var output = "tilepuz-ajb90";
 
 
 
@@ -174,6 +184,45 @@ function path(goalNode){
 		finalPath.unshift(goalNode.pNode_t.nodeState);	// adds parentNode to head of path
 		goalNode = goalNode.pNode_t;
 	}
+	fs.writeFileSync(output, "The total cost for this path was: " + finalCost + "\n");
+	for(var i = 0; i < finalPath.length; i ++){
+		var currentBoard = finalPath[i].board;
+		var lineToWrite1 = "";
+		var lineToWrite2 = "";
+		var lineToWrite3 = "";
+		var lineToWrite4 = "";
+		for (var j = 0; j < 4; j++){
+			if (j === 0){
+				lineToWrite1 = currentBoard[j];
+				continue;
+			}
+			lineToWrite1 += "," + currentBoard[j];
+		}
+		for (var k = 4; k < 8; k++){
+			if (k === 4){
+				lineToWrite2 = currentBoard[k];
+				continue;
+			}
+			lineToWrite2 += "," + currentBoard[k];
+		}
+		for (var l = 8; l < 12; l++){
+			if (l === 8){
+				lineToWrite3 = currentBoard[l];
+				continue;
+			}
+			lineToWrite3 += "," + currentBoard[l];
+		}
+		for (var m = 12; m < 16; m++){
+			if (m === 12){
+				lineToWrite4 = currentBoard[m];
+				continue;
+			}
+			lineToWrite4 += "," + currentBoard[m];
+		}
+		fs.writeFileSync(output, ("" + lineToWrite1 + "\n" + lineToWrite2 + "\n" + lineToWrite3 + "\n" + lineToWrite4));
+		//fs.writeFile(output, thingToWRite, function(err) { if (err) throw err; });	
+	}
+	
 	
 }
 
