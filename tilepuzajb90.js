@@ -202,6 +202,8 @@ var fringe = []; // caution - global variable
 	- if fringe is empty, declare failure
 */
 function aStar(){
+	var goalNodeState = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+
 	var startingBoard = inputSanitizer();
 	
 	var startCost = 0;
@@ -209,8 +211,21 @@ function aStar(){
 	var start_total_cost = start_h_cost;
 	var start_state = new State_t(startingBoard);
 	nullParent = null;
-	var startNode = new Node_t(startCost, start_h_cost, start_total_cost, start_state, nullParent)
+	var startNode = new Node_t(startCost, start_h_cost, start_total_cost, start_state, nullParent);
+	var currentNode;
 
+	successorFunction(startNode);	// adds startNode's children to the fringe
+
+	while(fringe.length > 0){
+		currentNode = fringe.shift();
+		if(currentNode.nodeState === goalNodeState){
+			pathWalker(currentNode);
+			console.log("Optimal solution stored in tilepuz-ajb90.txt, exiting now!")
+			process.exit(0);
+		}
+	}
+	console.log("Fringe empty. No solution found, quitting...");
+	process.exit(0);
 }
 
 
@@ -220,13 +235,13 @@ function aStar(){
 */
 
 
-function pathWalker(goalNode){
-	var finalCost = goalNode["total_cost"];
+function pathWalker(lastNode){
+	var finalCost = lastNode["total_cost"];
 	var finalPath = [];
-	finalPath.push(goalNode.nodeState);
-	while (goalNode.pNode_t){
-		finalPath.unshift(goalNode.pNode_t.nodeState);	// adds parentNode to head of path
-		goalNode = goalNode.pNode_t;
+	finalPath.push(lastNode.nodeState);
+	while (lastNode.pNode_t){
+		finalPath.unshift(lastNode.pNode_t.nodeState);	// adds parentNode to head of path
+		lastNode = lastNode.pNode_t;
 	}
 	fs.appendFileSync(output, "The total cost for this path was: " + finalCost + "\n");
 	for(var i = 0; i < finalPath.length; i ++){
