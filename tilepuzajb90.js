@@ -222,7 +222,7 @@ function aStar(){
 		if (nodesExpanded % 1000 === 0)
 			console.log(nodesExpanded/1000 + " Thousand many nodes expanded");
 		i--;	// i will get re-computed if successors are generated
-		if(currentNode.nodeState === goalNodeState){
+		if(currentNode.nodeState.board === goalNodeState){
 			pathWalker(currentNode);
 			console.log("Optimal solution stored in tilepuz-ajb90.txt, exiting now!")
 			process.exit(0);

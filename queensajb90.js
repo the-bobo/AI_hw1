@@ -7,7 +7,7 @@ if (process.argv.length !== 3) {
 }
 
 var n = process.argv[2]; //dimensions of gameboard
-var fringe = [];
+var fringe = new Array(99999999);
 var board = [];
 var boardRow = [];
 
@@ -71,10 +71,12 @@ function heuristic(board){
 	- if fringe is empty, declare failure
 */
 function aStar(){
-	var currentBest = 99999;
 	var startCost = 0;
 	var someState = new State_t(board);
 	var startNode = new Node_t(cost, someState);
+
+	var currentBestNode = startNode;
+	var currentBest = 99999;
 
 	successorFunction(startNode);
 
@@ -82,13 +84,19 @@ function aStar(){
 		var currentNode = fringe.shift();
 		if (heuristic(currentNode.nodeState.board) >= currentBest){
 			//ignore this guy
-			continue;
+			continue; // goes to top of while loop
 		}
 
 		if (heuristic(currentNode.nodeState.board) < currentBest){
-			successorFunction(currentNode); //add his children to fringe
+			if (successorFunction(currentNode) === -1) {	// this will update fringe
+				currentBestNode = currentNode;		// we've found an end state
+			} 
 		}
 	}
+	console.log("Emptied fringe, retrieving best solution \n");
+	console.log("Best solution has " + currentBest + " many pairs of attacking superqueens \n");
+	// ideally, output positions of queens as well
+
 }
 
 
@@ -102,7 +110,21 @@ function successorFunction(someNode) {
 	var board = someNode.nodeState.board;
 	var childNodes_t = []; // array of childNodes to return
 
+	var queenCount = 0;
+
+	// must return -1 if we are at an end state (no successors)
+
 	// generate childNodes_t 
+	for (var row = 0; row < n; row++){
+		for (var col = 0; col < n; col++){
+			if (board[col][row] === 1)
+				queenCount++;
+			if (queenCount > 0){
+				queenCount = 0;
+				continue; // goes to outer for loop, advancing us to next column
+			}
+		}
+	}
 
 }
 
